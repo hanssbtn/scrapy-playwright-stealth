@@ -1,6 +1,6 @@
 [project]
 name = "scrapy-playwright-stealth"
-version = "0.1.0"
+version = "0.1.1"
 description = "A wrapper for scrapy-playwright with stealth features."
 authors = [{name = "renatodvc", email = "r40128530+renatodvc@users.noreply.github.com"}]
 readme = "README.md"
@@ -10,6 +10,10 @@ dependencies = [
   "scrapy-playwright>=0.0.43",
   "tf-playwright-stealth>=1.1.2"
 ]
+
+[project.urls]
+Homepage = "https://github.com/renatodvc/scrapy-playwright-stealth"
+Repository = "https://github.com/renatodvc/scrapy-playwright-stealth"
 
 [build-system]
 requires = ["hatchling"]
