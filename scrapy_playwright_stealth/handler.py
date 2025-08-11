@@ -57,11 +57,11 @@ class ScrapyPlaywrightStealthDownloadHandler(ScrapyPlaywrightDownloadHandler):
         context_kwargs: Optional[dict],
         spider: Optional[Spider] = None
     ) -> BrowserContextWrapper:
-        context_kwargs = context_kwargs or {}
-        persistent = remote = False
-        if hasattr(self, "context_semaphore"):
-            await self.context_semaphore.acquire()
-        if self.config.use_stealth:
+        if playwright_stealth_version >= Version("2.0.0") and self.config.use_stealth:
+            context_kwargs = context_kwargs or {}
+            persistent = remote = False
+            if hasattr(self, "context_semaphore"):
+                await self.context_semaphore.acquire()
             await self._maybe_launch_browser_stealth()
             context = await self.browser.new_context(**context_kwargs)
             context.on(
@@ -98,7 +98,7 @@ class ScrapyPlaywrightStealthDownloadHandler(ScrapyPlaywrightDownloadHandler):
             return res
 
     async def _close(self) -> None:
-        if self.playwright_context_manager_stealth:
+        if playwright_stealth_version >= Version("2.0.0") and self.playwright_context_manager_stealth:
             # NOTE: The 3 arguments are not used for some reason, so ¯\_(ツ)_/¯
             await self.playwright_context_manager_stealth.__aexit__(None, None, None)
         await super()._close()
@@ -109,7 +109,7 @@ class ScrapyPlaywrightStealthDownloadHandler(ScrapyPlaywrightDownloadHandler):
         :versionadded: 0.1.2
         """
         self.stats = cast(StatsCollector, self.stats) # Handle pyright errors
-        if self.config.use_stealth:
+        if playwright_stealth_version >= Version("2.0.0") and self.config.use_stealth:
             logger.info("Starting download handler")
             self.playwright_context_manager_stealth = Stealth().use_async(async_playwright())
             self.playwright = await self.playwright_context_manager_stealth.__aenter__()
